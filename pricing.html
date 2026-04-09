@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>APEX — Pricing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#080608;
+  --deep:#0f0d0f;
+  --panel:#161416;
+  --card:#1e1b1e;
+  --border:#2c282c;
+  --border2:#3a353a;
+  --red:#e8192c;
+  --red-dark:#b01020;
+  --red-dim:rgba(232,25,44,.10);
+  --red-glow:rgba(232,25,44,.35);
+  --white:#f2eff2;
+  --muted:#7a757a;
+  --subtle:#3e3a3e;
+  --display:'Bebas Neue',sans-serif;
+  --body:'DM Sans',sans-serif;
+  --mono:'Space Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:var(--body);font-size:16px;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--black)}
+::-webkit-scrollbar-thumb{background:var(--red)}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  height:70px;display:flex;align-items:center;
+  padding:0 6vw;justify-content:space-between;
+  background:rgba(8,6,8,.93);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+}
+.logo{font-family:var(--display);font-size:32px;letter-spacing:5px;color:var(--white);text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0}
+.nav-links{display:flex;gap:2px;list-style:none;align-items:center}
+.nav-links a{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:8px 16px;border-radius:2px;transition:color .2s,background .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--white);background:rgba(255,255,255,.06)}
+.nav-join{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;background:var(--red);color:var(--white);padding:10px 24px;border-radius:2px;text-decoration:none;transition:background .2s,transform .15s,box-shadow .2s}
+.nav-join:hover{background:var(--red-dark);transform:translateY(-1px);box-shadow:0 8px 24px var(--red-glow)}
+
+/* ── PAGE HERO ── */
+.page-hero{
+  padding-top:70px;min-height:52vh;
+  position:relative;display:flex;align-items:flex-end;overflow:hidden;
+}
+.page-hero-bg{
+  position:absolute;inset:0;
+  background:url('https://images.unsplash.com/photo-1540497077202-7c8a3999166f?w=1600&q=85&auto=format&fit=crop') center 35%/cover no-repeat;
+}
+.page-hero-bg::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to top,var(--black) 0%,rgba(8,6,8,.8) 50%,rgba(8,6,8,.45) 100%),
+             linear-gradient(to right,rgba(8,6,8,.7) 0%,transparent 70%);
+}
+.page-hero-content{position:relative;z-index:2;padding:80px 8vw;width:100%}
+.breadcrumb{font-family:var(--mono);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.breadcrumb a{color:var(--muted);text-decoration:none;transition:color .2s}
+.breadcrumb a:hover{color:var(--red)}
+.breadcrumb span{color:var(--red)}
+.page-title{font-family:var(--display);font-size:clamp(64px,9vw,128px);line-height:.88;margin-bottom:24px}
+.page-title em{font-style:normal;color:var(--red)}
+.page-desc{font-size:15px;color:var(--muted);max-width:480px;line-height:1.85;font-weight:300}
+
+/* ── SHARED ── */
+section{padding:100px 8vw}
+.sec-tag{font-family:var(--mono);font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.sec-tag::before{content:'';width:20px;height:1px;background:var(--red)}
+.sec-title{font-family:var(--display);font-size:clamp(44px,5vw,68px);line-height:.9;margin-bottom:16px}
+.btn-red{display:inline-flex;align-items:center;gap:10px;background:var(--red);color:var(--white);font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:15px 30px;border-radius:2px;text-decoration:none;transition:background .2s,transform .15s,box-shadow .2s;border:none;cursor:pointer;white-space:nowrap}
+.btn-red:hover{background:var(--red-dark);transform:translateY(-2px);box-shadow:0 12px 36px var(--red-glow)}
+.btn-outline{display:inline-flex;align-items:center;gap:10px;background:transparent;color:var(--white);font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:14px 30px;border-radius:2px;text-decoration:none;border:1px solid var(--border2);transition:border-color .2s,color .2s;white-space:nowrap}
+.btn-outline:hover{border-color:var(--white)}
+.btn-red-outline{display:inline-flex;align-items:center;gap:10px;background:transparent;color:var(--red);font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:14px 30px;border-radius:2px;text-decoration:none;border:1px solid rgba(232,25,44,.4);transition:border-color .2s,background .2s;white-space:nowrap}
+.btn-red-outline:hover{border-color:var(--red);background:var(--red-dim)}
+
+/* ── BILLING TOGGLE ── */
+.billing-toggle{
+  display:flex;align-items:center;gap:16px;
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:64px;
+}
+.toggle-track{
+  width:52px;height:28px;border-radius:14px;
+  background:var(--panel);border:1px solid var(--border2);
+  position:relative;cursor:pointer;transition:background .2s;
+}
+.toggle-track.annual{background:var(--red)}
+.toggle-thumb{
+  position:absolute;top:4px;left:4px;
+  width:18px;height:18px;border-radius:50%;
+  background:var(--white);transition:transform .2s;
+}
+.toggle-track.annual .toggle-thumb{transform:translateX(24px)}
+.save-badge{
+  background:var(--red-dim);border:1px solid rgba(232,25,44,.3);
+  border-radius:2px;padding:4px 10px;
+  font-family:var(--mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--red);
+}
+
+/* ── MEMBERSHIP TIERS ── */
+.tiers{background:var(--deep)}
+.tiers-header{text-align:center;margin-bottom:16px}
+.tiers-header .sec-tag{justify-content:center}
+.tiers-header .sec-tag::before{display:none}
+.plans-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--border);
+}
+.plan{
+  background:var(--deep);padding:48px 40px;
+  position:relative;overflow:hidden;
+  transition:background .25s;
+}
+.plan.featured{background:var(--panel)}
+.plan.featured::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--red);
+}
+.plan-tag{
+  font-family:var(--mono);font-size:8px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:16px;
+}
+.plan.featured .plan-tag{color:var(--red)}
+.plan-name{font-family:var(--display);font-size:40px;letter-spacing:1px;margin-bottom:28px}
+.plan-price{display:flex;align-items:flex-start;gap:6px;margin-bottom:8px}
+.plan-currency{font-family:var(--display);font-size:28px;color:var(--muted);margin-top:8px}
+.plan-amount{font-family:var(--display);font-size:80px;line-height:.9;color:var(--white)}
+.plan.featured .plan-amount{color:var(--red)}
+.plan-period{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;align-self:flex-end;padding-bottom:10px}
+.plan-annual-note{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:32px;min-height:20px}
+.plan-divider{height:1px;background:var(--border);margin-bottom:32px}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:14px;margin-bottom:40px}
+.plan-features li{display:flex;align-items:flex-start;gap:12px;font-size:13px;color:var(--muted);line-height:1.5}
+.plan-features li.included{color:var(--white)}
+.plan-features li svg{width:16px;height:16px;flex-shrink:0;margin-top:1px;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.plan-features li.included svg{stroke:var(--red)}
+.plan-features li.excluded svg{stroke:var(--subtle)}
+.popular-badge{
+  position:absolute;top:20px;right:20px;
+  background:var(--red);border-radius:2px;
+  font-family:var(--mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--white);padding:6px 12px;
+}
+
+/* ── COMPARISON TABLE ── */
+.compare{background:var(--black)}
+.compare-table-wrap{overflow-x:auto;margin-top:56px}
+.compare-table{width:100%;border-collapse:collapse;min-width:640px}
+.compare-table th{
+  font-family:var(--mono);font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--muted);padding:18px 24px;text-align:center;
+  background:var(--panel);border:1px solid var(--border);
+}
+.compare-table th:first-child{text-align:left;width:36%}
+.compare-table th.highlight{color:var(--red);background:rgba(232,25,44,.06)}
+.compare-table td{
+  padding:16px 24px;border:1px solid var(--border);
+  font-size:13px;color:var(--muted);text-align:center;
+  vertical-align:middle;
+}
+.compare-table td:first-child{text-align:left;color:var(--white)}
+.compare-table td.highlight{background:rgba(232,25,44,.04)}
+.compare-table tr:hover td{background:var(--panel)}
+.compare-table tr:hover td.highlight{background:rgba(232,25,44,.08)}
+.ct-category{
+  background:var(--deep)!important;
+  font-family:var(--mono);font-size:8px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--red)!important;padding:12px 24px!important;
+  border-top:2px solid var(--border2)!important;
+}
+.ct-category td{background:var(--deep)!important;color:var(--red)!important}
+.check{width:18px;height:18px;stroke:var(--red);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.cross{width:18px;height:18px;stroke:var(--subtle);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── FAQ ── */
+.faq{background:var(--deep)}
+.faq-grid{display:grid;grid-template-columns:1fr 2fr;gap:80px;align-items:start}
+.faq-left{position:sticky;top:100px}
+.faq-left .sec-title{margin-bottom:20px}
+.faq-left p{font-size:14px;color:var(--muted);line-height:1.85;margin-bottom:32px}
+.faq-list{display:flex;flex-direction:column;gap:1px;background:var(--border)}
+.faq-item{background:var(--deep);overflow:hidden}
+.faq-q{
+  width:100%;background:none;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  padding:22px 24px;text-align:left;
+  font-family:var(--body);font-size:15px;color:var(--white);
+  transition:background .2s;
+}
+.faq-q:hover{background:var(--panel)}
+.faq-q.open{background:var(--panel);color:var(--red)}
+.faq-icon{
+  width:28px;height:28px;border-radius:2px;flex-shrink:0;
+  border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;
+  transition:border-color .2s,background .2s,transform .3s;
+}
+.faq-q.open .faq-icon{border-color:var(--red);background:var(--red-dim);transform:rotate(45deg)}
+.faq-icon svg{width:14px;height:14px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round}
+.faq-q.open .faq-icon svg{stroke:var(--red)}
+.faq-a{
+  max-height:0;overflow:hidden;
+  transition:max-height .35s ease,padding .3s;
+  font-size:14px;color:var(--muted);line-height:1.85;
+  padding:0 24px;
+}
+.faq-a.open{max-height:200px;padding:0 24px 22px}
+
+/* ── SIGN UP CTA ── */
+.signup{position:relative;overflow:hidden}
+.signup-photo{
+  position:absolute;inset:0;
+  background:url('https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=1600&q=80&auto=format&fit=crop') center 40%/cover no-repeat;
+}
+.signup-photo::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(8,6,8,.97) 40%,rgba(232,25,44,.18) 100%);
+}
+.signup-content{position:relative;z-index:2;padding:120px 8vw;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.signup-left .signup-title{font-family:var(--display);font-size:clamp(56px,7vw,100px);line-height:.88;margin-bottom:24px}
+.signup-left .signup-title span{color:var(--red)}
+.signup-left p{font-size:15px;color:var(--muted);line-height:1.85;font-weight:300}
+.signup-form{background:rgba(14,12,14,.85);backdrop-filter:blur(20px);border:1px solid var(--border2);border-radius:3px;padding:40px 36px}
+.form-tag{font-family:var(--mono);font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:24px;display:block}
+.form-row{margin-bottom:18px}
+.form-row label{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px}
+.form-row input,.form-row select{
+  width:100%;background:var(--black);border:1px solid var(--border2);border-radius:2px;
+  color:var(--white);font-family:var(--body);font-size:14px;
+  padding:13px 16px;outline:none;appearance:none;
+  transition:border-color .2s;
+}
+.form-row input:focus,.form-row select:focus{border-color:var(--red)}
+.form-row select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a757a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.form-note{font-family:var(--mono);font-size:9px;letter-spacing:1px;color:var(--muted);margin-top:16px;line-height:1.6}
+.form-note svg{width:12px;height:12px;stroke:var(--red);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:inline;vertical-align:middle;margin-right:5px}
+.trial-perks{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.trial-perk{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.trial-perk svg{width:15px;height:15px;stroke:var(--red);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+/* ── FOOTER ── */
+footer{background:var(--deep);border-top:1px solid var(--border);padding:72px 8vw 40px}
+.footer-top{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:60px;padding-bottom:56px;border-bottom:1px solid var(--border)}
+.footer-logo{font-family:var(--display);font-size:28px;letter-spacing:4px;color:var(--white);text-decoration:none;display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.footer-logo .dot{width:6px;height:6px;border-radius:50%;background:var(--red)}
+.footer-desc{font-size:13px;color:var(--muted);line-height:1.85;max-width:260px}
+.fcol h4{font-family:var(--mono);font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:18px}
+.fcol ul{list-style:none}
+.fcol li{margin-bottom:10px}
+.fcol a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s}
+.fcol a:hover{color:var(--white)}
+.footer-bottom{padding-top:32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-copy{font-family:var(--mono);font-size:9px;letter-spacing:1px;color:var(--subtle);text-transform:uppercase}
+.socials{display:flex;gap:8px}
+.soc{width:34px;height:34px;border:1px solid var(--border2);border-radius:2px;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:border-color .2s,background .2s}
+.soc:hover{border-color:var(--red);background:var(--red-dim)}
+.soc svg{width:14px;height:14px;stroke:var(--muted);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.soc:hover svg{stroke:var(--red)}
+
+/* ── FADE IN ── */
+.fi{opacity:0;transform:translateY(36px);transition:opacity .75s ease,transform .75s ease}
+.fi.in{opacity:1;transform:translateY(0)}
+.fi-d1{transition-delay:.1s}.fi-d2{transition-delay:.2s}.fi-d3{transition-delay:.3s}
+
+/* ── HAMBURGER ── */
+.hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:8px;z-index:1001}
+.hamburger span{display:block;width:22px;height:1.5px;background:var(--white);transition:transform .3s,opacity .3s}
+.hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+.mobile-menu{display:none;position:fixed;top:70px;left:0;right:0;bottom:0;z-index:800;background:rgba(8,6,8,.98);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:40px 6vw;overflow-y:auto}
+.mobile-menu.open{display:flex}
+.mobile-menu a{font-family:var(--display);font-size:clamp(32px,8vw,52px);letter-spacing:3px;color:var(--muted);text-decoration:none;transition:color .2s;padding:12px 0;width:100%;text-align:center;border-bottom:1px solid var(--border)}
+.mobile-menu a:hover,.mobile-menu a.active{color:var(--white)}
+.mobile-menu .mobile-cta{margin-top:24px;background:var(--red);color:var(--white);font-family:var(--mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;font-weight:700;padding:16px 40px;border-radius:2px;border:none;width:100%;text-align:center}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  nav{padding:0 5vw}
+  .nav-links,.nav-join{display:none}
+  .hamburger{display:flex}
+  .plans-grid{grid-template-columns:1fr}
+  .plan{padding:40px 32px}
+  .faq-grid{grid-template-columns:1fr;gap:40px}
+  .faq-left{position:static}
+  .signup-content{grid-template-columns:1fr;gap:48px}
+  .signup-content{padding:80px 5vw}
+  .footer-top{grid-template-columns:1fr 1fr;gap:40px}
+  section{padding:80px 5vw}
+  .compare-table th,.compare-table td{padding:14px 16px;font-size:12px}
+}
+@media(max-width:640px){
+  .billing-toggle{flex-wrap:wrap;justify-content:center;gap:12px}
+  .plans-grid{gap:0}
+  .plan{padding:32px 24px}
+  .plan-amount{font-size:64px}
+  .compare-table-wrap{border:1px solid var(--border);border-radius:2px}
+  .compare-table th,.compare-table td{padding:12px 10px;font-size:11px}
+  .signup-form{padding:28px 20px}
+  .form-row-2{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr}
+  section{padding:64px 5vw}
+  .page-hero-content{padding:60px 5vw}
+}
+@media(max-width:400px){
+  .plan-amount{font-size:52px}
+  .compare-table th:nth-child(2),.compare-table td:nth-child(2){display:none}
+  .page-title{font-size:clamp(48px,14vw,72px)}
+  .btn-red,.btn-outline,.btn-red-outline{padding:13px 20px;font-size:9px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo"><span class="logo-dot"></span>APEX</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="pricing.html" class="active">Pricing</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="#signup" class="nav-join">Join Now →</a>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html">Home</a>
+  <a href="services.html">Services</a>
+  <a href="pricing.html" class="active">Pricing</a>
+  <a href="contact.html">Contact</a>
+  <a href="#signup" class="mobile-cta">Join Now →</a>
+</div>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-hero-content fi">
+    <div class="breadcrumb"><a href="index.html">Home</a><span>/</span>Pricing</div>
+    <h1 class="page-title">SIMPLE<br><em>PRICING</em></h1>
+    <p class="page-desc">No hidden fees. No lock-in contracts. Just three honest plans built around how you train — with a free 7-day trial on every one.</p>
+  </div>
+</div>
+
+<!-- MEMBERSHIP TIERS -->
+<section class="tiers">
+  <div class="tiers-header fi">
+    <div class="sec-tag">01 · Plans</div>
+    <h2 class="sec-title">CHOOSE YOUR<br><span style="color:var(--red)">MEMBERSHIP</span></h2>
+    <p style="font-size:15px;color:var(--muted);max-width:480px;margin:12px auto 40px;line-height:1.8;font-weight:300">Every plan includes a 7-day free trial. Cancel anytime before you're charged.</p>
+    <div class="billing-toggle fi" style="justify-content:center">
+      <span id="toggle-monthly">Monthly</span>
+      <div class="toggle-track" id="toggle" onclick="toggleBilling()">
+        <div class="toggle-thumb"></div>
+      </div>
+      <span id="toggle-annual">Annual</span>
+      <div class="save-badge">Save 20%</div>
+    </div>
+  </div>
+
+  <div class="plans-grid fi fi-d1">
+
+    <!-- STARTER -->
+    <div class="plan">
+      <div class="plan-tag">Starter</div>
+      <div class="plan-name">BASIC</div>
+      <div class="plan-price">
+        <span class="plan-currency">₱</span>
+        <span class="plan-amount" id="price-basic">2,199</span>
+        <span class="plan-period">/ mo</span>
+      </div>
+      <div class="plan-annual-note" id="note-basic"></div>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Gym floor access (Mon–Fri 5am–10pm)</li>
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>2 group classes per week</li>
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Locker room & showers</li>
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>App access & progress tracking</li>
+        <li class="excluded"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>24/7 access</li>
+        <li class="excluded"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Recovery suite</li>
+        <li class="excluded"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Personal training sessions</li>
+        <li class="excluded"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Nutrition coaching</li>
+      </ul>
+      <a href="#signup" class="btn-red-outline" style="width:100%;justify-content:center">Start Free Trial →</a>
+    </div>
+
+    <!-- PRO (FEATURED) -->
+    <div class="plan featured">
+      <div class="popular-badge">Most Popular</div>
+      <div class="plan-tag">Most Popular</div>
+      <div class="plan-name">PRO</div>
+      <div class="plan-price">
+        <span class="plan-currency">₱</span>
+        <span class="plan-amount" id="price-pro">4,499</span>
+        <span class="plan-period">/ mo</span>
+      </div>
+      <div class="plan-annual-note" id="note-pro"></div>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Full 24/7 gym access</li>
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Unlimited group classes</li>
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Recovery suite access</li>
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Locker room & showers</li>
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>App access & progress tracking</li>
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>1 PT session / month</li>
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Guest pass (2/month)</li>
+        <li class="excluded"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Dedicated nutrition coaching</li>
+      </ul>
+      <a href="#signup" class="btn-red" style="width:100%;justify-content:center">Start Free Trial →</a>
+    </div>
+
+    <!-- ELITE -->
+    <div class="plan">
+      <div class="plan-tag">All-Inclusive</div>
+      <div class="plan-name">ELITE</div>
+      <div class="plan-price">
+        <span class="plan-currency">₱</span>
+        <span class="plan-amount" id="price-elite">8,499</span>
+        <span class="plan-period">/ mo</span>
+      </div>
+      <div class="plan-annual-note" id="note-elite"></div>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Full 24/7 gym access</li>
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Unlimited group classes</li>
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Recovery suite access</li>
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>4 PT sessions / month</li>
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Monthly nutrition coaching</li>
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Unlimited guest passes</li>
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Priority class booking</li>
+        <li class="included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Body composition scan monthly</li>
+      </ul>
+      <a href="#signup" class="btn-red-outline" style="width:100%;justify-content:center">Start Free Trial →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<section class="compare">
+  <div class="fi">
+    <div class="sec-tag">02 · Compare</div>
+    <h2 class="sec-title">PLAN<br>COMPARISON</h2>
+    <p style="font-size:15px;color:var(--muted);max-width:480px;line-height:1.8;font-weight:300;margin-top:12px">Everything side by side — so you can pick with confidence.</p>
+  </div>
+  <div class="compare-table-wrap fi fi-d1">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Basic</th>
+          <th class="highlight">Pro</th>
+          <th>Elite</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="ct-category"><td colspan="4">Access</td></tr>
+        <tr>
+          <td>Gym floor access</td>
+          <td><span style="font-family:var(--mono);font-size:10px;color:var(--muted)">Mon–Fri</span></td>
+          <td class="highlight"><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></td>
+          <td><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></td>
+        </tr>
+        <tr>
+          <td>24 / 7 access</td>
+          <td><svg class="cross" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+          <td class="highlight"><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></td>
+          <td><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></td>
+        </tr>
+        <tr>
+          <td>Multi-location access</td>
+          <td><svg class="cross" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+          <td class="highlight"><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></td>
+          <td><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></td>
+        </tr>
+
+        <tr class="ct-category"><td colspan="4">Classes</td></tr>
+        <tr>
+          <td>Group classes</td>
+          <td><span style="font-family:var(--mono);font-size:10px;color:var(--muted)">2 / week</span></td>
+          <td class="highlight"><span style="font-family:var(--mono);font-size:10px;color:var(--red)">Unlimited</span></td>
+          <td><span style="font-family:var(--mono);font-size:10px;color:var(--white)">Unlimited</span></td>
+        </tr>
+        <tr>
+          <td>Priority booking</td>
+          <td><svg class="cross" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+          <td class="highlight"><svg class="cross" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+          <td><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></td>
+        </tr>
+
+        <tr class="ct-category"><td colspan="4">Coaching</td></tr>
+        <tr>
+          <td>Personal training sessions</td>
+          <td><svg class="cross" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+          <td class="highlight"><span style="font-family:var(--mono);font-size:10px;color:var(--muted)">1 / month</span></td>
+          <td><span style="font-family:var(--mono);font-size:10px;color:var(--white)">4 / month</span></td>
+        </tr>
+        <tr>
+          <td>Nutrition coaching</td>
+          <td><svg class="cross" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+          <td class="highlight"><svg class="cross" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+          <td><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></td>
+        </tr>
+        <tr>
+          <td>Body composition scan</td>
+          <td><svg class="cross" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+          <td class="highlight"><svg class="cross" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+          <td><span style="font-family:var(--mono);font-size:10px;color:var(--white)">Monthly</span></td>
+        </tr>
+
+        <tr class="ct-category"><td colspan="4">Extras</td></tr>
+        <tr>
+          <td>Recovery suite</td>
+          <td><svg class="cross" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+          <td class="highlight"><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></td>
+          <td><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></td>
+        </tr>
+        <tr>
+          <td>Guest passes</td>
+          <td><svg class="cross" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></td>
+          <td class="highlight"><span style="font-family:var(--mono);font-size:10px;color:var(--muted)">2 / month</span></td>
+          <td><span style="font-family:var(--mono);font-size:10px;color:var(--white)">Unlimited</span></td>
+        </tr>
+        <tr>
+          <td>App & progress tracking</td>
+          <td><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></td>
+          <td class="highlight"><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></td>
+          <td><svg class="check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="faq-grid">
+    <div class="faq-left fi">
+      <div class="sec-tag">03 · FAQ</div>
+      <h2 class="sec-title">COMMON<br>QUESTIONS</h2>
+      <p>Still unsure? Browse our most frequently asked questions — or reach out and we'll answer personally.</p>
+      <a href="contact.html" class="btn-outline">Contact Us →</a>
+    </div>
+    <div class="faq-list fi fi-d1">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How does the 7-day free trial work?
+          <div class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+        </button>
+        <div class="faq-a">Sign up online, choose your plan, and walk in the same day. You'll have full access to everything included in your plan for 7 days — no credit card required until your trial ends. Cancel before day 7 and you'll never be charged.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Can I cancel or change my plan anytime?
+          <div class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+        </button>
+        <div class="faq-a">Yes — always. We don't do lock-in contracts. You can upgrade, downgrade, or cancel your membership directly from the app or at the front desk, with no fees or penalties. Changes take effect at your next billing cycle.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What's included in the recovery suite?
+          <div class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+        </button>
+        <div class="faq-a">The recovery suite includes a cold plunge pool (10°C), full-spectrum infrared sauna, Normatec compression therapy boots, foam rolling station, and stretch mats. Available to Pro and Elite members at all hours.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How do I book a personal training session?
+          <div class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+        </button>
+        <div class="faq-a">PT sessions can be booked through the APEX app or at the front desk. Pro members receive 1 session per month which rolls over if unused. Elite members receive 4 sessions and can book additional sessions at a discounted rate.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Is there a joining fee?
+          <div class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+        </button>
+        <div class="faq-a">No joining fee, ever. What you see is what you pay. We believe in transparent pricing — no activation fees, no admin fees, no surprises on your first bill.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Can I freeze my membership?
+          <div class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+        </button>
+        <div class="faq-a">Yes. You can freeze your membership for up to 3 months per year at no cost — useful for travel, injury recovery, or life changes. Freezes are managed through the app and take effect within 24 hours.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Do you offer student or corporate discounts?
+          <div class="faq-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+        </button>
+        <div class="faq-a">We offer 15% off for verified students and 20% off for corporate groups of 5 or more. Contact us directly with your student ID or company details to apply the discount to your account.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SIGN UP CTA -->
+<section class="signup" id="signup">
+  <div class="signup-photo"></div>
+  <div class="signup-content">
+    <div class="signup-left fi">
+      <h2 class="signup-title">START YOUR<br><span>FREE</span><br>TRIAL</h2>
+      <p style="margin-top:20px;margin-bottom:32px">7 days of full access. No credit card. No commitment. Just results.</p>
+      <div class="trial-perks">
+        <div class="trial-perk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Instant access to all facilities</div>
+        <div class="trial-perk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Attend any group class this week</div>
+        <div class="trial-perk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Free intro session with a coach</div>
+        <div class="trial-perk"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>No obligation — cancel before day 7</div>
+      </div>
+    </div>
+    <div class="signup-form fi fi-d1">
+      <span class="form-tag">Begin Your Trial</span>
+      <div class="form-row">
+        <label>Full Name</label>
+        <input type="text" placeholder="Your full name"/>
+      </div>
+      <div class="form-row">
+        <label>Email Address</label>
+        <input type="email" placeholder="you@email.com"/>
+      </div>
+      <div class="form-row">
+        <label>Phone Number</label>
+        <input type="tel" placeholder="+1 (000) 000-0000"/>
+      </div>
+      <div class="form-row">
+        <label>Choose a Plan</label>
+        <select>
+          <option value="">Select membership...</option>
+          <option value="basic">Basic — ₱2,199 / mo</option>
+          <option value="pro" selected>Pro — ₱4,499 / mo (Most Popular)</option>
+          <option value="elite">Elite — ₱8,499 / mo</option>
+        </select>
+      </div>
+      <button class="btn-red" style="width:100%;justify-content:center;margin-top:8px">
+        <svg style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Claim My Free Trial
+      </button>
+      <p class="form-note">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        No credit card required · Secure sign-up · Cancel anytime
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <a href="index.html" class="footer-logo"><span class="dot"></span>APEX</a>
+      <p class="footer-desc">Premium fitness for those who demand more. Real coaching. Real results. No excuses.</p>
+    </div>
+    <div class="fcol">
+      <h4>Navigate</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <div class="fcol">
+      <h4>Plans</h4>
+      <ul>
+        <li><a href="#signup">Basic — ₱2,199/mo</a></li>
+        <li><a href="#signup">Pro — ₱4,499/mo</a></li>
+        <li><a href="#signup">Elite — ₱8,499/mo</a></li>
+        <li><a href="contact.html">Corporate Plans</a></li>
+      </ul>
+    </div>
+    <div class="fcol">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2026 Apex Fitness Studio — All rights reserved</p>
+    <div class="socials">
+      <a href="#" class="soc"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="var(--muted)"/></svg></a>
+      <a href="#" class="soc"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 01-3.14 1.53A4.48 4.48 0 0016 2a4.48 4.48 0 00-4.48 4.48c0 .35.04.7.11 1.03A12.72 12.72 0 013 4.64a4.48 4.48 0 001.39 5.98 4.46 4.46 0 01-2.03-.56v.06a4.48 4.48 0 003.59 4.39 4.5 4.5 0 01-2.02.08 4.49 4.49 0 004.19 3.12A9 9 0 012 19.54a12.72 12.72 0 006.88 2.02c8.26 0 12.78-6.84 12.78-12.78 0-.19 0-.39-.01-.58A9.1 9.1 0 0023 3z"/></svg></a>
+      <a href="#" class="soc"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="var(--muted)" stroke="none"/></svg></a>
+      <a href="#" class="soc"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+    </div>
+    <p class="footer-copy">Privacy · Terms</p>
+  </div>
+</footer>
+
+<script>
+// Scroll fade
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in') })
+},{threshold:0.08})
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el))
+
+// Hamburger
+const ham = document.getElementById('hamburger')
+const mob = document.getElementById('mobile-menu')
+ham.addEventListener('click',()=>{
+  ham.classList.toggle('open'); mob.classList.toggle('open')
+  document.body.style.overflow = mob.classList.contains('open')?'hidden':''
+})
+mob.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+  ham.classList.remove('open'); mob.classList.remove('open'); document.body.style.overflow=''
+}))
+
+// Billing toggle
+const prices = {basic:[2199,1749],pro:[4499,3599],elite:[8499,6799]}
+let isAnnual = false
+function toggleBilling(){
+  isAnnual = !isAnnual
+  const track = document.getElementById('toggle')
+  track.classList.toggle('annual', isAnnual)
+  const keys = ['basic','pro','elite']
+  keys.forEach(k=>{
+    document.getElementById("price-"+k).textContent = prices[k][isAnnual?1:0].toLocaleString()
+    document.getElementById('note-'+k).textContent = isAnnual
+      ? `Billed annually · Save ₱${(prices[k][0]-prices[k][1])*12}/yr`
+      : ''
+  })
+  document.getElementById('toggle-annual').style.color = isAnnual ? 'var(--white)' : 'var(--muted)'
+  document.getElementById('toggle-monthly').style.color = isAnnual ? 'var(--muted)' : 'var(--white)'
+}
+
+// FAQ accordion
+function toggleFaq(btn){
+  const answer = btn.nextElementSibling
+  const isOpen = btn.classList.contains('open')
+  document.querySelectorAll('.faq-q').forEach(q=>{ q.classList.remove('open'); q.nextElementSibling.classList.remove('open') })
+  if(!isOpen){ btn.classList.add('open'); answer.classList.add('open') }
+}
+</script>
+</body>
+</html>
