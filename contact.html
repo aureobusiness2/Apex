@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>APEX — Contact</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#080608;
+  --deep:#0f0d0f;
+  --panel:#161416;
+  --card:#1e1b1e;
+  --border:#2c282c;
+  --border2:#3a353a;
+  --red:#e8192c;
+  --red-dark:#b01020;
+  --red-dim:rgba(232,25,44,.10);
+  --red-glow:rgba(232,25,44,.35);
+  --white:#f2eff2;
+  --muted:#7a757a;
+  --subtle:#3e3a3e;
+  --display:'Bebas Neue',sans-serif;
+  --body:'DM Sans',sans-serif;
+  --mono:'Space Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:var(--body);font-size:16px;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:var(--black)}
+::-webkit-scrollbar-thumb{background:var(--red)}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  height:70px;display:flex;align-items:center;
+  padding:0 6vw;justify-content:space-between;
+  background:rgba(8,6,8,.93);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+}
+.logo{font-family:var(--display);font-size:32px;letter-spacing:5px;color:var(--white);text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo-dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0}
+.nav-links{display:flex;gap:2px;list-style:none;align-items:center}
+.nav-links a{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:8px 16px;border-radius:2px;transition:color .2s,background .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--white);background:rgba(255,255,255,.06)}
+.nav-join{font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;background:var(--red);color:var(--white);padding:10px 24px;border-radius:2px;text-decoration:none;transition:background .2s,transform .15s,box-shadow .2s}
+.nav-join:hover{background:var(--red-dark);transform:translateY(-1px);box-shadow:0 8px 24px var(--red-glow)}
+
+/* ── PAGE HERO ── */
+.page-hero{
+  padding-top:70px;min-height:52vh;
+  position:relative;display:flex;align-items:flex-end;overflow:hidden;
+}
+.page-hero-bg{
+  position:absolute;inset:0;
+  background:url('https://images.unsplash.com/photo-1593079831268-3381b0db4a77?w=1600&q=85&auto=format&fit=crop') center 40%/cover no-repeat;
+}
+.page-hero-bg::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to top,var(--black) 0%,rgba(8,6,8,.78) 50%,rgba(8,6,8,.45) 100%),
+             linear-gradient(to right,rgba(8,6,8,.7) 0%,transparent 70%);
+}
+.page-hero-content{position:relative;z-index:2;padding:80px 8vw;width:100%}
+.breadcrumb{font-family:var(--mono);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.breadcrumb a{color:var(--muted);text-decoration:none;transition:color .2s}
+.breadcrumb a:hover{color:var(--red)}
+.breadcrumb span{color:var(--red)}
+.page-title{font-family:var(--display);font-size:clamp(64px,9vw,128px);line-height:.88;margin-bottom:24px}
+.page-title em{font-style:normal;color:var(--red)}
+.page-desc{font-size:15px;color:var(--muted);max-width:480px;line-height:1.85;font-weight:300}
+
+/* ── SHARED ── */
+section{padding:100px 8vw}
+.sec-tag{font-family:var(--mono);font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.sec-tag::before{content:'';width:20px;height:1px;background:var(--red)}
+.sec-title{font-family:var(--display);font-size:clamp(44px,5vw,68px);line-height:.9;margin-bottom:16px}
+.btn-red{display:inline-flex;align-items:center;gap:10px;background:var(--red);color:var(--white);font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:15px 30px;border-radius:2px;text-decoration:none;transition:background .2s,transform .15s,box-shadow .2s;border:none;cursor:pointer;white-space:nowrap}
+.btn-red:hover{background:var(--red-dark);transform:translateY(-2px);box-shadow:0 12px 36px var(--red-glow)}
+.btn-outline{display:inline-flex;align-items:center;gap:10px;background:transparent;color:var(--white);font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:14px 30px;border-radius:2px;text-decoration:none;border:1px solid var(--border2);transition:border-color .2s,color .2s;white-space:nowrap}
+.btn-outline:hover{border-color:var(--white)}
+
+/* ── QUICK CONTACT STRIP ── */
+.quick-strip{
+  background:var(--panel);border-bottom:1px solid var(--border);
+  padding:0 8vw;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:0;
+}
+.qitem{
+  padding:32px 24px;border-right:1px solid var(--border);
+  display:flex;align-items:center;gap:16px;
+  transition:background .2s;cursor:default;
+}
+.qitem:last-child{border-right:none}
+.qitem:hover{background:var(--card)}
+.qitem-icon{
+  width:44px;height:44px;flex-shrink:0;border-radius:2px;
+  border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;
+  transition:border-color .2s,background .2s;
+}
+.qitem:hover .qitem-icon{border-color:var(--red);background:var(--red-dim)}
+.qitem-icon svg{width:20px;height:20px;stroke:var(--red);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.qitem-label{font-family:var(--mono);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.qitem-value{font-size:13px;color:var(--white);font-weight:500}
+
+/* ── CONTACT FORM + INFO ── */
+.contact-main{background:var(--black);padding:100px 8vw}
+.contact-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:80px;align-items:start}
+
+/* form */
+.contact-form{background:var(--deep);border:1px solid var(--border);border-radius:3px;padding:48px 44px}
+.form-header{margin-bottom:36px}
+.form-tag{font-family:var(--mono);font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--red);display:block;margin-bottom:12px}
+.form-title{font-family:var(--display);font-size:38px;line-height:.92}
+.form-row{margin-bottom:20px}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.form-row label,.form-row-2 label{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px}
+.form-row input,.form-row select,.form-row textarea,
+.form-row-2 input,.form-row-2 select{
+  width:100%;background:var(--black);border:1px solid var(--border2);border-radius:2px;
+  color:var(--white);font-family:var(--body);font-size:14px;
+  padding:13px 16px;outline:none;appearance:none;
+  transition:border-color .2s;resize:none;
+}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus,
+.form-row-2 input:focus,.form-row-2 select:focus{border-color:var(--red)}
+.form-row select,.form-row-2 select{
+  cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a757a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;
+}
+.form-row textarea{min-height:120px;line-height:1.7}
+.form-note{font-family:var(--mono);font-size:9px;letter-spacing:1px;color:var(--muted);margin-top:14px;display:flex;align-items:center;gap:8px}
+.form-note svg{width:13px;height:13px;stroke:var(--red);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+/* info panel */
+.contact-info{display:flex;flex-direction:column;gap:0}
+.info-block{padding:32px 0;border-bottom:1px solid var(--border)}
+.info-block:first-child{padding-top:0}
+.info-block:last-child{border-bottom:none}
+.info-block-label{font-family:var(--mono);font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.info-block-label::before{content:'';width:16px;height:1px;background:var(--red)}
+.info-line{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;font-size:14px;color:var(--muted);line-height:1.6}
+.info-line:last-child{margin-bottom:0}
+.info-line svg{width:16px;height:16px;stroke:var(--red);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;margin-top:2px}
+.info-line a{color:var(--muted);text-decoration:none;transition:color .2s}
+.info-line a:hover{color:var(--white)}
+.info-line strong{color:var(--white);font-weight:500}
+
+/* hours table */
+.hours-table{width:100%;border-collapse:collapse}
+.hours-table tr{border-bottom:1px solid var(--border)}
+.hours-table tr:last-child{border-bottom:none}
+.hours-table td{padding:10px 0;font-size:13px;color:var(--muted)}
+.hours-table td:last-child{text-align:right;color:var(--white)}
+.hours-table tr.today td{color:var(--red)}
+.hours-table tr.today td:last-child{color:var(--red)}
+.today-badge{
+  display:inline-block;background:var(--red-dim);border:1px solid rgba(232,25,44,.3);
+  border-radius:2px;font-family:var(--mono);font-size:7px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--red);padding:2px 7px;margin-left:8px;vertical-align:middle;
+}
+
+/* socials */
+.social-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.social-card{
+  border:1px solid var(--border2);border-radius:2px;padding:16px 18px;
+  display:flex;align-items:center;gap:14px;
+  text-decoration:none;transition:border-color .2s,background .2s;
+}
+.social-card:hover{border-color:var(--red);background:var(--red-dim)}
+.social-card-icon{width:36px;height:36px;border-radius:2px;background:var(--panel);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.social-card-icon svg{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.social-card:hover .social-card-icon svg{stroke:var(--red)}
+.social-card-name{font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--white);margin-bottom:2px}
+.social-card-handle{font-size:11px;color:var(--muted)}
+
+/* ── LOCATIONS / MAP ── */
+.locations{background:var(--deep)}
+.locations-header{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:end;margin-bottom:64px}
+.location-tabs{display:flex;gap:1px;background:var(--border);margin-bottom:40px;border-radius:2px;overflow:hidden}
+.loc-tab{
+  flex:1;padding:14px 12px;text-align:center;
+  font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);background:var(--deep);cursor:pointer;border:none;
+  transition:color .2s,background .2s;
+}
+.loc-tab.active{background:var(--panel);color:var(--red);border-bottom:2px solid var(--red)}
+.loc-tab:hover:not(.active){background:var(--panel);color:var(--white)}
+.location-detail{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.loc-map{
+  position:relative;overflow:hidden;border-radius:2px;min-height:420px;
+  background:var(--panel);
+}
+.loc-map-img{
+  width:100%;height:100%;object-fit:cover;
+  background-size:cover;background-position:center;
+  position:absolute;inset:0;
+}
+.loc-map-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 60%,rgba(15,13,15,.9) 100%);
+  z-index:1;
+}
+.loc-map-pin{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);
+  z-index:2;display:flex;flex-direction:column;align-items:center;gap:0;
+}
+.loc-map-pin-dot{
+  width:20px;height:20px;border-radius:50%;background:var(--red);
+  border:3px solid var(--white);box-shadow:0 0 0 4px rgba(232,25,44,.3);
+}
+.loc-map-pin-stem{width:2px;height:20px;background:var(--red)}
+.loc-map-label{
+  position:absolute;bottom:24px;left:24px;z-index:2;
+  background:rgba(8,6,8,.85);backdrop-filter:blur(12px);
+  border:1px solid var(--border2);border-radius:3px;padding:14px 18px;
+}
+.loc-map-label strong{font-family:var(--display);font-size:20px;display:block;margin-bottom:2px}
+.loc-map-label span{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+.loc-info{background:var(--panel);padding:40px 36px;display:flex;flex-direction:column;gap:28px}
+.loc-info-row{display:flex;gap:14px;align-items:flex-start}
+.loc-info-row svg{width:18px;height:18px;stroke:var(--red);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;margin-top:2px}
+.loc-info-row-content .row-label{font-family:var(--mono);font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.loc-info-row-content .row-value{font-size:14px;color:var(--white);line-height:1.7}
+.loc-info-row-content .row-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.get-directions{
+  margin-top:auto;display:inline-flex;align-items:center;gap:10px;
+  background:var(--red);color:var(--white);
+  font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  padding:14px 24px;border-radius:2px;text-decoration:none;
+  transition:background .2s,transform .15s;
+}
+.get-directions:hover{background:var(--red-dark);transform:translateY(-1px)}
+
+/* ── HOURS & SOCIALS ── */
+.hours-socials{background:var(--black);padding:100px 8vw}
+.hs-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px}
+
+/* ── CTA ── */
+.cta{
+  position:relative;overflow:hidden;
+  background:var(--deep);border-top:1px solid var(--border);
+  padding:80px 8vw;
+  display:grid;grid-template-columns:1fr auto;gap:60px;align-items:center;
+}
+.cta-title{font-family:var(--display);font-size:clamp(44px,5vw,72px);line-height:.9}
+.cta-title span{color:var(--red)}
+.cta-sub{font-size:14px;color:var(--muted);margin-top:12px;font-weight:300}
+.cta-actions{display:flex;flex-direction:column;gap:12px}
+
+/* ── FOOTER ── */
+footer{background:var(--deep);border-top:1px solid var(--border);padding:72px 8vw 40px}
+.footer-top{display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:60px;padding-bottom:56px;border-bottom:1px solid var(--border)}
+.footer-logo{font-family:var(--display);font-size:28px;letter-spacing:4px;color:var(--white);text-decoration:none;display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.footer-logo .dot{width:6px;height:6px;border-radius:50%;background:var(--red)}
+.footer-desc{font-size:13px;color:var(--muted);line-height:1.85;max-width:260px}
+.fcol h4{font-family:var(--mono);font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:18px}
+.fcol ul{list-style:none}
+.fcol li{margin-bottom:10px}
+.fcol a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s}
+.fcol a:hover{color:var(--white)}
+.footer-bottom{padding-top:32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-copy{font-family:var(--mono);font-size:9px;letter-spacing:1px;color:var(--subtle);text-transform:uppercase}
+.socials{display:flex;gap:8px}
+.soc{width:34px;height:34px;border:1px solid var(--border2);border-radius:2px;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:border-color .2s,background .2s}
+.soc:hover{border-color:var(--red);background:var(--red-dim)}
+.soc svg{width:14px;height:14px;stroke:var(--muted);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .2s}
+.soc:hover svg{stroke:var(--red)}
+
+/* ── SUCCESS STATE ── */
+.form-success{
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:60px 40px;gap:20px;
+}
+.form-success.show{display:flex}
+.success-icon{
+  width:64px;height:64px;border-radius:50%;
+  border:2px solid var(--red);display:flex;align-items:center;justify-content:center;
+}
+.success-icon svg{width:28px;height:28px;stroke:var(--red);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.success-title{font-family:var(--display);font-size:36px;color:var(--white)}
+.success-p{font-size:14px;color:var(--muted);max-width:280px;line-height:1.8}
+
+/* ── FADE IN ── */
+.fi{opacity:0;transform:translateY(36px);transition:opacity .75s ease,transform .75s ease}
+.fi.in{opacity:1;transform:translateY(0)}
+.fi-d1{transition-delay:.1s}.fi-d2{transition-delay:.2s}.fi-d3{transition-delay:.3s}
+
+/* ── HAMBURGER ── */
+.hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;background:none;border:none;cursor:pointer;padding:8px;z-index:1001}
+.hamburger span{display:block;width:22px;height:1.5px;background:var(--white);transition:transform .3s,opacity .3s}
+.hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+.mobile-menu{display:none;position:fixed;top:70px;left:0;right:0;bottom:0;z-index:800;background:rgba(8,6,8,.98);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:40px 6vw;overflow-y:auto}
+.mobile-menu.open{display:flex}
+.mobile-menu a{font-family:var(--display);font-size:clamp(32px,8vw,52px);letter-spacing:3px;color:var(--muted);text-decoration:none;transition:color .2s;padding:12px 0;width:100%;text-align:center;border-bottom:1px solid var(--border)}
+.mobile-menu a:hover,.mobile-menu a.active{color:var(--white)}
+.mobile-menu .mobile-cta{margin-top:24px;background:var(--red);color:var(--white);font-family:var(--mono);font-size:11px;letter-spacing:3px;text-transform:uppercase;font-weight:700;padding:16px 40px;border-radius:2px;border:none;width:100%;text-align:center}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  nav{padding:0 5vw}
+  .nav-links,.nav-join{display:none}
+  .hamburger{display:flex}
+  .quick-strip{grid-template-columns:1fr 1fr}
+  .qitem{border-right:none;border-bottom:1px solid var(--border)}
+  .contact-grid{grid-template-columns:1fr;gap:48px}
+  .contact-form{padding:40px 36px}
+  .locations-header{grid-template-columns:1fr;gap:24px}
+  .location-detail{grid-template-columns:1fr}
+  .loc-map{min-height:320px}
+  .hs-grid{grid-template-columns:1fr;gap:56px}
+  .cta{grid-template-columns:1fr;gap:32px}
+  .footer-top{grid-template-columns:1fr 1fr;gap:40px}
+  section{padding:80px 5vw}
+}
+@media(max-width:640px){
+  .quick-strip{grid-template-columns:1fr}
+  .qitem{border-right:none}
+  .qitem:last-child{border-bottom:none}
+  .contact-form{padding:28px 20px}
+  .form-row-2{grid-template-columns:1fr}
+  .social-grid{grid-template-columns:1fr}
+  .location-tabs{overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+  .loc-tab{min-width:72px;font-size:8px;padding:12px 8px;flex-shrink:0}
+  .loc-info{padding:28px 24px}
+  .hours-table td{font-size:12px;padding:8px 0}
+  .footer-top{grid-template-columns:1fr}
+  section{padding:64px 5vw}
+  .page-hero-content{padding:60px 5vw}
+  .contact-main{padding:64px 5vw}
+}
+@media(max-width:400px){
+  .page-title{font-size:clamp(48px,14vw,72px)}
+  .cta-title{font-size:40px}
+  .btn-red,.btn-outline{padding:13px 20px;font-size:9px}
+  .loc-map{min-height:240px}
+  .loc-map-pin-dot{width:16px;height:16px}
+  .loc-map-label strong{font-size:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo"><span class="logo-dot"></span>APEX</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="contact.html" class="active">Contact</a></li>
+  </ul>
+  <a href="pricing.html" class="nav-join">Join Now →</a>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html">Home</a>
+  <a href="services.html">Services</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="contact.html" class="active">Contact</a>
+  <a href="pricing.html" class="mobile-cta">Join Now →</a>
+</div>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-hero-content fi">
+    <div class="breadcrumb"><a href="index.html">Home</a><span>/</span>Contact</div>
+    <h1 class="page-title">GET IN<br><em>TOUCH</em></h1>
+    <p class="page-desc">Questions, tours, partnerships, or just want to say hi — we're a real team and we respond fast. Reach out any way you prefer.</p>
+  </div>
+</div>
+
+<!-- QUICK CONTACT STRIP -->
+<div class="quick-strip fi">
+  <div class="qitem">
+    <div class="qitem-icon">
+      <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.95 10.7a19.79 19.79 0 01-3.07-8.67A2 2 0 012.85 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L7 7.91a16 16 0 006.06 6.06l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+    </div>
+    <div>
+      <div class="qitem-label">Phone</div>
+      <div class="qitem-value">+63 917 123 4567</div>
+    </div>
+  </div>
+  <div class="qitem">
+    <div class="qitem-icon">
+      <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    </div>
+    <div>
+      <div class="qitem-label">Email</div>
+      <div class="qitem-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ee868b828281ae8f9e8b9688879a808b9d9dc09e86">[email&#160;protected]</a></div>
+    </div>
+  </div>
+  <div class="qitem">
+    <div class="qitem-icon">
+      <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+    </div>
+    <div>
+      <div class="qitem-label">Main Location</div>
+      <div class="qitem-value">BGC, Taguig City</div>
+    </div>
+  </div>
+  <div class="qitem">
+    <div class="qitem-icon">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    </div>
+    <div>
+      <div class="qitem-label">Response Time</div>
+      <div class="qitem-value">Within 2 Hours</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT FORM + INFO -->
+<section class="contact-main">
+  <div class="contact-grid">
+
+    <!-- FORM -->
+    <div class="contact-form fi">
+      <div id="form-fields">
+        <div class="form-header">
+          <span class="form-tag">Send a Message</span>
+          <h2 class="form-title">WE'D LOVE<br>TO HEAR YOU</h2>
+        </div>
+        <div class="form-row-2">
+          <div>
+            <label>First Name</label>
+            <input type="text" id="fname" placeholder="Juan"/>
+          </div>
+          <div>
+            <label>Last Name</label>
+            <input type="text" id="lname" placeholder="dela Cruz"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Email Address</label>
+          <input type="email" id="email" placeholder="you@email.com"/>
+        </div>
+        <div class="form-row">
+          <label>Phone Number</label>
+          <input type="tel" id="phone" placeholder="+63 9XX XXX XXXX"/>
+        </div>
+        <div class="form-row">
+          <label>I'm Interested In</label>
+          <select id="subject">
+            <option value="">Select a topic...</option>
+            <option>Membership enquiry</option>
+            <option>Book a gym tour</option>
+            <option>Personal training</option>
+            <option>Corporate / group packages</option>
+            <option>Class schedule</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Your Message</label>
+          <textarea id="message" placeholder="Tell us how we can help you..."></textarea>
+        </div>
+        <button class="btn-red" style="width:100%;justify-content:center" onclick="submitForm()">
+          <svg style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Send Message
+        </button>
+        <p class="form-note">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Your info is private and never shared.
+        </p>
+      </div>
+      <div class="form-success" id="form-success">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="success-title">MESSAGE SENT</div>
+        <p class="success-p">Thanks for reaching out! We'll get back to you within 2 hours during operating hours.</p>
+        <button class="btn-outline" onclick="resetForm()">Send Another →</button>
+      </div>
+    </div>
+
+    <!-- INFO -->
+    <div class="contact-info fi fi-d1">
+      <div class="info-block">
+        <div class="info-block-label">Direct Contact</div>
+        <div class="info-line">
+          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.95 10.7a19.79 19.79 0 01-3.07-8.67A2 2 0 012.85 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L7 7.91a16 16 0 006.06 6.06l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+          <span><strong>+63 917 123 4567</strong><br>Call or text anytime</span>
+        </div>
+        <div class="info-line">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <a href="/cdn-cgi/l/email-protection#157d7079797a557465706d737c617b7066663b657d"><span class="__cf_email__" data-cfemail="bed6dbd2d2d1fedfcedbc6d8d7cad0dbcdcd90ced6">[email&#160;protected]</span></a>
+        </div>
+        <div class="info-line">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <a href="/cdn-cgi/l/email-protection#016c646c636473726968717241607164796768756f6472722f7169"><span class="__cf_email__" data-cfemail="15787078777067667d7c6566557465706d737c617b7066663b657d">[email&#160;protected]</span></a>
+        </div>
+      </div>
+
+      <div class="info-block">
+        <div class="info-block-label">Operating Hours</div>
+        <table class="hours-table">
+          <tr id="row-mon"><td>Monday</td><td>Open 24 hours</td></tr>
+          <tr id="row-tue"><td>Tuesday</td><td>Open 24 hours</td></tr>
+          <tr id="row-wed"><td>Wednesday</td><td>Open 24 hours</td></tr>
+          <tr id="row-thu"><td>Thursday</td><td>Open 24 hours</td></tr>
+          <tr id="row-fri"><td>Friday</td><td>Open 24 hours</td></tr>
+          <tr id="row-sat"><td>Saturday</td><td>5:00 AM – 11:00 PM</td></tr>
+          <tr id="row-sun"><td>Sunday</td><td>6:00 AM – 10:00 PM</td></tr>
+        </table>
+      </div>
+
+      <div class="info-block">
+        <div class="info-block-label">Follow Us</div>
+        <div class="social-grid">
+          <a href="#" class="social-card">
+            <div class="social-card-icon">
+              <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="var(--muted)" stroke="none"/></svg>
+            </div>
+            <div>
+              <div class="social-card-name">Instagram</div>
+              <div class="social-card-handle">@apexfitness.ph</div>
+            </div>
+          </a>
+          <a href="#" class="social-card">
+            <div class="social-card-icon">
+              <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+            </div>
+            <div>
+              <div class="social-card-name">TikTok</div>
+              <div class="social-card-handle">@apexfitnessph</div>
+            </div>
+          </a>
+          <a href="#" class="social-card">
+            <div class="social-card-icon">
+              <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="var(--muted)" stroke="none"/></svg>
+            </div>
+            <div>
+              <div class="social-card-name">YouTube</div>
+              <div class="social-card-handle">APEX Fitness PH</div>
+            </div>
+          </a>
+          <a href="#" class="social-card">
+            <div class="social-card-icon">
+              <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+            </div>
+            <div>
+              <div class="social-card-name">Facebook</div>
+              <div class="social-card-handle">Apex Fitness Studio</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- LOCATIONS / MAP -->
+<section class="locations">
+  <div class="locations-header">
+    <div class="fi">
+      <div class="sec-tag">02 · Locations</div>
+      <h2 class="sec-title">FIND A<br><span style="color:var(--red)">BRANCH</span></h2>
+    </div>
+    <p style="font-size:15px;color:var(--muted);max-width:400px;line-height:1.8;font-weight:300" class="fi fi-d1">Six locations across Metro Manila — each one fully equipped and staffed with certified coaches.</p>
+  </div>
+
+  <div class="location-tabs fi">
+    <button class="loc-tab active" onclick="switchLocation(0,this)">BGC</button>
+    <button class="loc-tab" onclick="switchLocation(1,this)">Makati</button>
+    <button class="loc-tab" onclick="switchLocation(2,this)">Ortigas</button>
+    <button class="loc-tab" onclick="switchLocation(3,this)">Quezon City</button>
+    <button class="loc-tab" onclick="switchLocation(4,this)">Alabang</button>
+    <button class="loc-tab" onclick="switchLocation(5,this)">Pasay</button>
+  </div>
+
+  <div class="location-detail fi fi-d1">
+    <div class="loc-map">
+      <div class="loc-map-img" id="loc-map-img" style="background-image:url('https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=900&q=80&auto=format&fit=crop')"></div>
+      <div class="loc-map-overlay"></div>
+      <div class="loc-map-pin">
+        <div class="loc-map-pin-dot"></div>
+        <div class="loc-map-pin-stem"></div>
+      </div>
+      <div class="loc-map-label">
+        <strong id="loc-name">BGC Branch</strong>
+        <span id="loc-area">Bonifacio Global City, Taguig</span>
+      </div>
+    </div>
+    <div class="loc-info">
+      <div class="loc-info-row">
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <div class="loc-info-row-content">
+          <div class="row-label">Address</div>
+          <div class="row-value" id="loc-address">G/F One Bonifacio High Street<br>BGC, Taguig City 1634</div>
+        </div>
+      </div>
+      <div class="loc-info-row">
+        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.95 10.7a19.79 19.79 0 01-3.07-8.67A2 2 0 012.85 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L7 7.91a16 16 0 006.06 6.06l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>
+        <div class="loc-info-row-content">
+          <div class="row-label">Phone</div>
+          <div class="row-value" id="loc-phone">+63 917 123 4567</div>
+        </div>
+      </div>
+      <div class="loc-info-row">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <div class="loc-info-row-content">
+          <div class="row-label">Hours</div>
+          <div class="row-value" id="loc-hours">Mon–Fri: Open 24hrs<br>Sat: 5AM–11PM · Sun: 6AM–10PM</div>
+        </div>
+      </div>
+      <div class="loc-info-row">
+        <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        <div class="loc-info-row-content">
+          <div class="row-label">Parking</div>
+          <div class="row-value" id="loc-parking">Validated parking in building<br>Street parking available</div>
+          <div class="row-sub" id="loc-note">2 hrs free with membership</div>
+        </div>
+      </div>
+      <a href="#" class="get-directions">
+        <svg style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+        Get Directions
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- HOURS & SOCIALS -->
+<section class="hours-socials fi">
+  <div class="hs-grid">
+    <div>
+      <div class="sec-tag">03 · Hours</div>
+      <h2 class="sec-title" style="margin-bottom:32px">OPENING<br><span style="color:var(--red)">HOURS</span></h2>
+      <table class="hours-table" style="width:100%;border-collapse:collapse">
+        <tr id="row-mon2"><td style="padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--muted)">Monday</td><td style="padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--white);text-align:right">Open 24 hours</td></tr>
+        <tr id="row-tue2"><td style="padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--muted)">Tuesday</td><td style="padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--white);text-align:right">Open 24 hours</td></tr>
+        <tr id="row-wed2"><td style="padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--muted)">Wednesday</td><td style="padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--white);text-align:right">Open 24 hours</td></tr>
+        <tr id="row-thu2"><td style="padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--muted)">Thursday</td><td style="padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--white);text-align:right">Open 24 hours</td></tr>
+        <tr id="row-fri2"><td style="padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--muted)">Friday</td><td style="padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--white);text-align:right">Open 24 hours</td></tr>
+        <tr id="row-sat2"><td style="padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--muted)">Saturday</td><td style="padding:14px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--white);text-align:right">5:00 AM – 11:00 PM</td></tr>
+        <tr id="row-sun2"><td style="padding:14px 0;font-size:14px;color:var(--muted)">Sunday</td><td style="padding:14px 0;font-size:14px;color:var(--white);text-align:right">6:00 AM – 10:00 PM</td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="sec-tag">04 · Socials</div>
+      <h2 class="sec-title" style="margin-bottom:32px">FOLLOW<br><span style="color:var(--red)">THE JOURNEY</span></h2>
+      <p style="font-size:14px;color:var(--muted);line-height:1.85;margin-bottom:36px;font-weight:300">Stay updated with class schedules, transformation stories, nutrition tips, and member highlights across our channels.</p>
+      <div class="social-grid">
+        <a href="#" class="social-card">
+          <div class="social-card-icon"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="var(--muted)" stroke="none"/></svg></div>
+          <div><div class="social-card-name">Instagram</div><div class="social-card-handle">@apexfitness.ph</div></div>
+        </a>
+        <a href="#" class="social-card">
+          <div class="social-card-icon"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg></div>
+          <div><div class="social-card-name">TikTok</div><div class="social-card-handle">@apexfitnessph</div></div>
+        </a>
+        <a href="#" class="social-card">
+          <div class="social-card-icon"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="var(--muted)" stroke="none"/></svg></div>
+          <div><div class="social-card-name">YouTube</div><div class="social-card-handle">APEX Fitness PH</div></div>
+        </a>
+        <a href="#" class="social-card">
+          <div class="social-card-icon"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></div>
+          <div><div class="social-card-name">Facebook</div><div class="social-card-handle">Apex Fitness Studio</div></div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta fi">
+  <div>
+    <h2 class="cta-title">READY TO<br><span>START?</span></h2>
+    <p class="cta-sub">First 7 days free. No credit card. Walk in today.</p>
+  </div>
+  <div class="cta-actions">
+    <a href="pricing.html" class="btn-red">
+      <svg style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      View Pricing
+    </a>
+    <a href="services.html" class="btn-outline">Explore Services</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <a href="index.html" class="footer-logo"><span class="dot"></span>APEX</a>
+      <p class="footer-desc">Premium fitness for those who demand more. Real coaching. Real results. No excuses.</p>
+    </div>
+    <div class="fcol">
+      <h4>Navigate</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <div class="fcol">
+      <h4>Locations</h4>
+      <ul>
+        <li><a href="#">BGC, Taguig</a></li>
+        <li><a href="#">Makati CBD</a></li>
+        <li><a href="#">Ortigas Center</a></li>
+        <li><a href="#">Quezon City</a></li>
+      </ul>
+    </div>
+    <div class="fcol">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="pricing.html">Membership FAQ</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2026 Apex Fitness Studio Philippines — All rights reserved</p>
+    <div class="socials">
+      <a href="#" class="soc"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="var(--muted)"/></svg></a>
+      <a href="#" class="soc"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="var(--muted)" stroke="none"/></svg></a>
+      <a href="#" class="soc"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="var(--muted)" stroke="none"/></svg></a>
+      <a href="#" class="soc"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
+    </div>
+    <p class="footer-copy">Privacy · Terms</p>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// Scroll fade
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in') })
+},{threshold:0.08})
+document.querySelectorAll('.fi').forEach(el=>obs.observe(el))
+
+// Hamburger
+const ham = document.getElementById('hamburger')
+const mob = document.getElementById('mobile-menu')
+ham.addEventListener('click',()=>{
+  ham.classList.toggle('open'); mob.classList.toggle('open')
+  document.body.style.overflow = mob.classList.contains('open')?'hidden':''
+})
+mob.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+  ham.classList.remove('open'); mob.classList.remove('open'); document.body.style.overflow=''
+}))
+
+// Highlight today's hours row
+const days = ['sun','mon','tue','wed','thu','fri','sat']
+const today = days[new Date().getDay()]
+const todayRow = document.getElementById('row-'+today)
+if(todayRow){
+  todayRow.classList.add('today')
+  const dayCell = todayRow.querySelector('td')
+  dayCell.innerHTML += '<span class="today-badge">Today</span>'
+}
+
+// Contact form submit
+function submitForm(){
+  const fields = ['fname','lname','email','phone','subject','message']
+  let valid = true
+  fields.forEach(id=>{
+    const el = document.getElementById(id)
+    if(!el.value.trim()){
+      el.style.borderColor = 'var(--red)'
+      valid = false
+    } else {
+      el.style.borderColor = 'var(--border2)'
+    }
+  })
+  if(!valid) return
+  document.getElementById('form-fields').style.display = 'none'
+  document.getElementById('form-success').classList.add('show')
+}
+function resetForm(){
+  document.getElementById('form-fields').style.display = 'block'
+  document.getElementById('form-success').classList.remove('show')
+  const fields = ['fname','lname','email','phone','subject','message']
+  fields.forEach(id=>{ document.getElementById(id).value = '' })
+}
+
+// Location switcher
+const locations = [
+  {
+    name:'BGC Branch',area:'Bonifacio Global City, Taguig',
+    address:'G/F One Bonifacio High Street<br>BGC, Taguig City 1634',
+    phone:'+63 917 123 4567',
+    hours:'Mon–Fri: Open 24hrs<br>Sat: 5AM–11PM · Sun: 6AM–10PM',
+    parking:'Validated parking in building<br>Street parking available',
+    note:'2 hrs free with membership',
+    img:'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=900&q=80&auto=format&fit=crop'
+  },
+  {
+    name:'Makati Branch',area:'Makati Central Business District',
+    address:'3/F Glorietta 3, Ayala Center<br>Makati City 1224',
+    phone:'+63 917 234 5678',
+    hours:'Mon–Fri: Open 24hrs<br>Sat: 5AM–11PM · Sun: 6AM–10PM',
+    parking:'Ayala Center parking available<br>First 3 hrs free',
+    note:'Validated with purchase',
+    img:'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=900&q=80&auto=format&fit=crop'
+  },
+  {
+    name:'Ortigas Branch',area:'Ortigas Center, Pasig City',
+    address:'L/G SM Megamall Building A<br>Ortigas Center, Pasig 1605',
+    phone:'+63 917 345 6789',
+    hours:'Mon–Fri: Open 24hrs<br>Sat: 5AM–11PM · Sun: 6AM–10PM',
+    parking:'SM Megamall parking<br>₱50/hr after first hour',
+    note:'Free for Elite members',
+    img:'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=900&q=80&auto=format&fit=crop'
+  },
+  {
+    name:'QC Branch',area:'Quezon City',
+    address:'2/F Vertis North Mall<br>Quezon City 1105',
+    phone:'+63 917 456 7890',
+    hours:'Mon–Fri: Open 24hrs<br>Sat: 5AM–11PM · Sun: 6AM–10PM',
+    parking:'Vertis North basement parking<br>First 2 hrs free',
+    note:'Validated with membership scan',
+    img:'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=900&q=80&auto=format&fit=crop'
+  },
+  {
+    name:'Alabang Branch',area:'Muntinlupa City',
+    address:'G/F Alabang Town Center<br>Muntinlupa City 1780',
+    phone:'+63 917 567 8901',
+    hours:'Mon–Fri: Open 24hrs<br>Sat: 5AM–11PM · Sun: 6AM–10PM',
+    parking:'ATC open parking<br>Free all day',
+    note:'Ample parking on weekends',
+    img:'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=900&q=80&auto=format&fit=crop'
+  },
+  {
+    name:'Pasay Branch',area:'Pasay City',
+    address:'G/F SM Mall of Asia<br>Pasay City 1300',
+    phone:'+63 917 678 9012',
+    hours:'Mon–Fri: Open 24hrs<br>Sat: 5AM–11PM · Sun: 6AM–10PM',
+    parking:'MOA complex parking<br>₱40/hr standard rate',
+    note:'Discount sticker at front desk',
+    img:'https://images.unsplash.com/photo-1470723710355-95304d8aece4?w=900&q=80&auto=format&fit=crop'
+  }
+]
+function switchLocation(i, btn){
+  document.querySelectorAll('.loc-tab').forEach(t=>t.classList.remove('active'))
+  btn.classList.add('active')
+  const l = locations[i]
+  document.getEle
